@@ -1,4 +1,8 @@
-use std::{net::SocketAddr, sync::Arc, sync::atomic::Ordering};
+use std::{
+    net::{Ipv6Addr, SocketAddr},
+    sync::Arc,
+    sync::atomic::Ordering,
+};
 
 use anyhow::{Context, Result};
 use rust_app_template::{
@@ -27,7 +31,9 @@ async fn main() -> Result<()> {
     };
 
     let delay = config.shutdown_delay;
-    let addr = SocketAddr::from(([0, 0, 0, 0], config.port));
+    // `[::]`: IPv6 and, with the Linux default bindv6only=0, IPv4 too. The cluster is IPv6-first:
+    // an IPv4-only listener refuses the kubelet probes on the pod's IPv6 address.
+    let addr = SocketAddr::from((Ipv6Addr::UNSPECIFIED, config.port));
     let state = AppState::new(config, verifier);
     let ready = state.ready.clone();
     let app = routes::router(state);
