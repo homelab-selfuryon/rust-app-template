@@ -101,9 +101,10 @@ or `docker login ghcr.io` if the package is not public).
 
 ## Delivery
 
-- **Pull request**: `ci.yaml` runs `rust-ci` (`devenv test`, `cue vet`) and, for branches of this repository,
-  `app-preview`: image `pr-<n>-<sha7>` and manifests `pr-<n>`, signed with the preview identity;
-  gitops creates the environment `<team>-pr-<n>` while the PR is open.
+- **Pull request**: `ci.yaml` runs `rust-ci` (`devenv test`, `cue vet`). With the label `preview` (branches
+  of this repository only), `preview.yaml` runs `app-preview`: image `pr-<n>-<sha7>` and manifests
+  `pr-<n>`, signed with the preview identity; gitops creates the environment `<team>-pr-<n>` while
+  the PR is open and labelled, and removes it when either goes.
 - **main**: `release-please.yaml` opens a release PR (changelog, version from Conventional Commits).
   Merging it creates the tag `v<version>`. The tag is created with an octo-sts token so that it
   triggers `release.yaml`.
