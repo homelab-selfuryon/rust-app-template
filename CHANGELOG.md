@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/homelab-selfuryon/rust-app-template/compare/v0.1.0...v0.1.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate jsonwebtoken to v12 ([#16](https://github.com/homelab-selfuryon/rust-app-template/issues/16)) ([27314d9](https://github.com/homelab-selfuryon/rust-app-template/commit/27314d984098202439721b229275e535fd03196e))
+
 ## 0.1.0 (2026-11-11)
 
 
