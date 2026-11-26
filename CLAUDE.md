@@ -15,7 +15,7 @@ tests/             auth.rs (verifier), http.rs (router), kube_jwks.rs (apiserver
 deploy/deploy.cue  the app contract (platform-kit #App)
 devenv.yaml/.nix   tools: the platform-kit devenv module (toolchain, treefmt, git hooks, `devenv test`); no Nix flakes
 Containerfile      multi-stage image build, base images pinned by digest; .dockerignore
-.github/workflows/ thin callers of github-workflows: ci, release-please, release, promote, register
+.github/workflows/ thin callers of github-workflows: ci, preview, release-please, release, promote
 ```
 
 ## Commands

@@ -7,7 +7,7 @@ that must evolve comes as a pinned, Renovate-bumped dependency, not as code you 
 | From                                                                        | What                                                                                                                                                                                     |
 | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`platform-kit`](https://github.com/homelab-selfuryon/platform-kit)         | the CUE schema of `deploy/deploy.cue` and its render to Kubernetes objects; the devenv module: toolchain, tools, treefmt, git hooks, local Postgres, and `devenv test` (the CI contract) |
-| [`github-workflows`](https://github.com/homelab-selfuryon/github-workflows) | CI, preview, release, promote, register: the workflows here only call them                                                                                                               |
+| [`github-workflows`](https://github.com/homelab-selfuryon/github-workflows) | CI, preview, release, promote: the workflows here only call them                                                                                                                         |
 | [`.github`](https://github.com/homelab-selfuryon/.github)                   | the Renovate preset                                                                                                                                                                      |
 
 After "Use this template" the Cargo files and the code are yours; there is no template sync.
@@ -40,18 +40,20 @@ Your own: `LOG_LEVEL` (or `RUST_LOG`), `SHUTDOWN_DELAY_SECS`, `REQUEST_TIMEOUT_S
 
 Members cannot create repositories; an app starts as a PR to the platform:
 
-1. **Platform PR**: the platform team adds `{"name": "<app>", "team": "<team>"}` to `apps.json` in
-   `platform-terraform` (a new team also needs `teams.json` and `platform-components` `teams/<team>.cue`).
-2. **Owner applies** `github/` (the repository is created from this template, with the custom
-   properties `owner-team` and `kind=app`, team access, the Environments `staging` and `prod`, rulesets)
-   and `openbao/` (roles and policies `<team>-<env>-<app>`).
+1. **Catalog PR**: add `teams/<team>/<app>.cue` to the
+   [`catalog`](https://github.com/homelab-selfuryon/catalog) repository (a new team also needs
+   `teams/<team>/team.cue`). Its `catalog.json` reaches `platform-terraform`, `platform-components`
+   and `gitops` as one PR each (until the catalog opens them itself, the platform team does).
+2. **Owner merges and applies `platform-terraform`** first: `github/` (the repository is created from
+   this template, with the custom properties `owner-team` and `kind=app`, team access, the Environments
+   `staging` and `prod`, rulesets) and `openbao/` (roles and policies `<team>-<env>-<app>`). Then the
+   `platform-components` PR (namespaces, quotas) and the `gitops` PR (`{}` version files, the team's
+   `prod.json` line in CODEOWNERS; gitops-verify checks the team against the repository's
+   `owner-team` property).
 3. **First PR in the new repository** renames the template (see "After Use this template" below: Cargo
    package, `Containerfile` `ARG BIN`, `deploy/deploy.cue` `name` and `team`, `CODEOWNERS`, the octo-sts
    `subject`). Merge it to `main`.
-4. **`register.yaml`** runs on that push (`app-register`, octo-sts identity `app-register`) and
-   opens a PR in gitops: `apps/<team>/<app>/app.cue` and the registry entry. gitops-verify checks
-   that `deploy.cue`'s team equals the repository's `owner-team` property; the platform team approves.
-5. The first tag (release-please PR, merge) runs the normal release flow.
+4. The first tag (release-please PR, merge) runs the normal release flow.
 
 ## After "Use this template"
 
@@ -63,7 +65,7 @@ Members cannot create repositories; an app starts as a PR to the platform:
    `github.com/homelab-selfuryon/<repository>@v0`.
 3. **`.github/CODEOWNERS`**: your team, `@homelab-selfuryon/<team>`.
 4. **`.github/chainguard/release-please.sts.yaml`**: the repository name in `subject`.
-5. Platform side (nothing in this repository): see "Onboarding" above; `register.yaml` opens the gitops PR.
+5. Platform side (nothing in this repository): see "Onboarding" above.
 6. Delete what you do not need (`/v1/hello`, `/v1/whoami`, `src/auth/` if nothing calls you) and
    replace this README.
 
