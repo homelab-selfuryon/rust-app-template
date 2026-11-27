@@ -40,9 +40,9 @@ Your own: `LOG_LEVEL` (or `RUST_LOG`), `SHUTDOWN_DELAY_SECS`, `REQUEST_TIMEOUT_S
 
 Members cannot create repositories; an app starts as a PR to the platform:
 
-1. **Catalog PR**: add `teams/<team>/<app>.cue` to the
-   [`catalog`](https://github.com/homelab-selfuryon/catalog) repository (a new team also needs
-   `teams/<team>/team.cue`). Its `catalog.json` reaches `platform-terraform`, `platform-components`
+1. **Catalog PR**: add the app to `teams/<team>.cue` in the
+   [`catalog`](https://github.com/homelab-selfuryon/catalog) repository (a new team is a new file
+   there). Its `catalog.json` reaches `platform-terraform`, `platform-components`
    and `gitops` as one PR each, opened by the catalog's CI.
 2. **Owner merges and applies `platform-terraform`** first: `github/` (the repository is created from
    this template, with the custom properties `owner-team` and `kind=app`, team access, the Environments
